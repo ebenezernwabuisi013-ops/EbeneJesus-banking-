@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eben-Jesus Bank</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<button>default username: student password:1234</button>
+<body class="min-h-screen bg-gradient-to-br from-yellow-500 via-yellow-400 to-blue-800">
+
+<!-- ================= HOME / LOGIN SECTION ================= -->
+
+<div id="homeSection" class="flex items-center justify-center min-h-screen">
+
+  <div class="bg-white/95 backdrop-blur-lg shadow-2xl rounded-3xl p-10 w-full max-w-md border-4 border-blue-700">
+
+    <h1 class="text-4xl font-extrabold text-center bg-gradient-to-r from-red-600 via-blue-700 to-red-600 bg-clip-text text-transparent">
+      Eben-Jesus Bank
+    </h1>
+
+    <p class="text-center text-gray-700 mt-3 font-semibold">
+      The Good Shepherd Senior School, Nnewi
+    </p>
+
+    <div class="mt-8">
+      <input id="username" type="text" placeholder="Username"
+        class="w-full p-4 mb-4 border-2 border-yellow-400 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500">
+
+      <input id="password" type="password" placeholder="Password"
+        class="w-full p-4 mb-6 border-2 border-yellow-400 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500">
+
+      <button onclick="login()"
+        class="w-full bg-gradient-to-r from-yellow-500 via-blue-700 to-yellow-500 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:scale-105 transition duration-300">
+        LOGIN
+      </button><button> Default username: student
+  Default password:1234</button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ================= DASHBOARD SECTION ================= -->
+
+<div id="dashboardSection" class="hidden p-8">
+
+  <!-- Top Bar -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-extrabold text-white">Eben-Jesus Bank</h1>
+      <p class="text-white font-medium">The Good Shepherd Senior School, Nnewi</p>
+    </div>
+
+    <button onclick="logout()"
+      class="bg-gradient-to-r from-red-600 to-blue-700 text-white px-6 py-2 rounded-xl font-semibold shadow-lg">
+      Logout
+    </button>
+  </div>
+
+  <!-- Balance Card -->
+  <div class="bg-gradient-to-r from-yellow-500 to-blue-800 text-white rounded-2xl p-8 shadow-2xl mb-8 border-4 border-red-600">
+    <h2 class="text-xl font-semibold">Account Balance</h2>
+    <p class="text-4xl font-extrabold mt-3">₦<span id="balance">0</span></p>
+  </div>
+
+  <!-- Transactions -->
+  <div class="bg-white rounded-2xl p-6 shadow-xl mb-8 border-4 border-blue-700">
+    <h2 class="text-xl font-bold mb-4 text-blue-800">Transactions</h2>
+    <ul id="transactions" class="space-y-3"></ul>
+  </div>
+
+  <!-- Loan Payment -->
+  <div class="bg-white rounded-2xl p-6 shadow-xl border-4 border-red-600">
+    <h2 class="text-xl font-bold mb-4 text-red-700">Loan Payment</h2>
+
+    <input id="loanAmount" type="number" placeholder="Enter Loan Amount"
+      class="w-full p-4 border-2 border-yellow-500 rounded-xl mb-4 focus:outline-none focus:ring-4 focus:ring-blue-600">
+
+    <button onclick="payLoan()"
+      class="w-full bg-gradient-to-r from-red-600 via-blue-700 to-red-600 text-white py-4 rounded-xl font-bold shadow-lg hover:scale-105 transition duration-300">
+      PAY LOAN
+    </button>
+  </div>
+
+</div>
+
+<script>
+
+// Default Account Setup
+if (!localStorage.getItem("ebenUser")) {
+  const defaultUser = {
+    username: "student",
+    password: "1234",
+    balance: 75000,
+    transactions: ["Account created with ₦75000"]
+  };
+  localStorage.setItem("ebenUser", JSON.stringify(defaultUser));
+}
+
+// LOGIN FUNCTION
+function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  const user = JSON.parse(localStorage.getItem("ebenUser"));
+
+  if (username === user.username && password === user.password) {
+    document.getElementById("homeSection").classList.add("hidden");
+    document.getElementById("dashboardSection").classList.remove("hidden");
+    loadDashboard();
+  } else {
+    alert("Invalid Login Details");
+  }
+}
+
+// LOAD DASHBOARD DATA
+function loadDashboard() {
+  const user = JSON.parse(localStorage.getItem("ebenUser"));
+
+  document.getElementById("balance").innerText = user.balance;
+
+  const transactionList = document.getElementById("transactions");
+  transactionList.innerHTML = "";
+
+  user.transactions.forEach(tx => {
+    const li = document.createElement("li");
+    li.className = "bg-gradient-to-r from-yellow-200 to-blue-200 p-3 rounded-lg font-semibold";
+    li.innerText = tx;
+    transactionList.appendChild(li);
+  });
+}
+
+// PAY LOAN FUNCTION
+function payLoan() {
+  const amount = parseInt(document.getElementById("loanAmount").value);
+  const user = JSON.parse(localStorage.getItem("ebenUser"));
+
+  if (amount > 0 && amount <= user.balance) {
+    user.balance -= amount;
+    user.transactions.push("Loan payment of ₦" + amount);
+
+    localStorage.setItem("ebenUser", JSON.stringify(user));
+    loadDashboard();
+    document.getElementById("loanAmount").value = "";
+
+    alert("Loan Payment Successful!");
+
+    // Open Ebenezer-i9m YouTube Channel
+    window.open("https://www.youtube.com/@Ebenezer-i9m", "_blank");
+
+  } else {
+    alert("Invalid Amount or Insufficient Funds");
+  }
+}
+
+// LOGOUT
+function logout() {
+  document.getElementById("dashboardSection").classList.add("hidden");
+  document.getElementById("homeSection").classList.remove("hidden");
+}
+
+</script>
+
+</body>
+</html>
